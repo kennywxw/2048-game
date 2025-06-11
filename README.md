@@ -19,4 +19,4 @@
 
 ## 在线试玩
 
-访问 [游戏页面](https://[您的GitHub用户名].github.io/2048-game/) 即可在线体验。 
+访问 [游戏页面](https://kennywxw.github.io/2048-game/) 即可在线体验。 
