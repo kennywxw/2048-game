@@ -16,6 +16,7 @@ class Game2048 {
         this.touchEndX = 0;
         this.touchEndY = 0;
         this.minSwipeDistance = 30; // 最小滑动距离
+        this.isTouchDevice = 'ontouchstart' in window; // 检测是否为触摸设备
         
         // 初始化音频上下文
         this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -101,23 +102,37 @@ class Game2048 {
             }
         });
 
-        // 触摸控制
-        this.gridElement.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            this.touchStartX = e.touches[0].clientX;
-            this.touchStartY = e.touches[0].clientY;
-        }, { passive: false });
+        // 触摸控制 - 改为监听整个文档
+        if (this.isTouchDevice) {
+            document.addEventListener('touchstart', (e) => {
+                // 如果触摸开始于按钮上，不处理滑动
+                if (e.target.closest('button')) {
+                    return;
+                }
+                e.preventDefault();
+                this.touchStartX = e.touches[0].clientX;
+                this.touchStartY = e.touches[0].clientY;
+            }, { passive: false });
 
-        this.gridElement.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-        }, { passive: false });
+            document.addEventListener('touchmove', (e) => {
+                // 如果触摸开始于按钮上，不阻止默认行为
+                if (e.target.closest('button')) {
+                    return;
+                }
+                e.preventDefault();
+            }, { passive: false });
 
-        this.gridElement.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            this.touchEndX = e.changedTouches[0].clientX;
-            this.touchEndY = e.changedTouches[0].clientY;
-            this.handleSwipe();
-        }, { passive: false });
+            document.addEventListener('touchend', (e) => {
+                // 如果触摸开始于按钮上，不处理滑动
+                if (e.target.closest('button')) {
+                    return;
+                }
+                e.preventDefault();
+                this.touchEndX = e.changedTouches[0].clientX;
+                this.touchEndY = e.changedTouches[0].clientY;
+                this.handleSwipe();
+            }, { passive: false });
+        }
 
         this.restartButton.addEventListener('click', () => {
             this.init();
